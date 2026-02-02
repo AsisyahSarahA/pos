@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produk;
 use Illuminate\Http\Request;
+
 
 class ProdukController extends Controller
 {
@@ -11,9 +13,11 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        $data['title'] = "Judul Produk";
-        $data['nama_produk'] = "Oreo";
-        return view('produk.index', $data);
+        // $data['title'] = "Judul Produk";
+        $title = "Porduk";
+        $dataproduk = Produk::getDataproduk();
+        // dd($dataproduk);
+        return view('produk.index', compact('dataproduk'));
     }
 
     /**
@@ -21,7 +25,7 @@ class ProdukController extends Controller
      */
     public function create()
     {
-        //
+        echo "INi halaman create lohn";
     }
 
     /**
