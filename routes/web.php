@@ -13,8 +13,16 @@ Route::get('/', function () {
 // Route::get ('/products', function () {
 //     return view('products.index');
 // });
-Route::get('/produk', [App\Http\Controllers\ProdukController::class, 'index']);
-Route::get('/produk/create', [App\Http\Controllers\ProdukController::class, 'create']);
-Route::get('/pelanggan', [App\Http\Controllers\PelangganController::class, 'index']);
-Route::get('/categories', [App\Http\Controllers\CategoryController::class, 'index']);
-Route::get('/customers', [App\Http\Controllers\CustomerController::class, 'index']);
+Route::get('/produk', [ProdukController::class, 'index']);
+Route::get('/produk/create', [ProdukController::class, 'create']);
+
+Route::get('/pelanggan', [PelangganController::class, 'index']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/create', [CategoryController::class, 'create']);
+Route::post('/categories/store',[CategoryController::class, 'store']);
+Route::get('/categories/edit/{id}',[CategoryController::class, 'edit']);
+Route::put('/categories/update/{id}',[CategoryController::class, 'update']);
+Route::get('/categories/delete/{id}',[CategoryController::class, 'delete']);
+
+Route::get('/customers', [CustomerController::class, 'index']);
