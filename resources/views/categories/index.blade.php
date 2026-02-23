@@ -11,10 +11,23 @@
 
 <body>
     <h1>Halaman Kategori</h1>
+    {{-- validasi redirect --}}
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     {{-- <h3>{{ $title }}</h3> --}}
+    <form action="{{ route('categories.index') }}" method="GET">
+        <input type="text" name="category_name" placeholder="Search Category" value = "{{ request('category_name') }}">
+        <input type="text" name="id" placeholder="Search ID" value = "{{ request('id') }}">
+        <button type="submit">Search</button>
+    </form>
+    <br>
     <table border="1" cellpadding="10" cellspacing="0">
         <button class="btn btn-primary m-2 p-2 rounded-md bg-blue-500 text-white">
             <a href="/categories/create">Tambah Kategori</a></button>
+
         <thead>
             <tr>
                 <th>Kode Kategori</th>
@@ -28,7 +41,17 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->category_name }}</td>
                     <td>
-                        <a href="/categories/edit/{{ $category->id }}">Edit</a>
+                        <button class="btn btn-primary m-2 p-2 rounded-md bg-green-500 text-white">
+                            <a href="{{ route('categories.edit', $category->id) }}">Edit</a></button>
+                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
+                            style="display: inline-block">
+
+                            @csrf
+                            {{-- ini untuk token hapus csrf --}}
+                            @method('DELETE')
+                            <button type="submit"
+                                onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">Delete</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach

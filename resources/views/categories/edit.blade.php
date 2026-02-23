@@ -9,8 +9,16 @@
 </head>
 
 <body>
-    <form action="/categories/update/{{ $category->id }}" method="POST">
+    <form action="{{ route('categories.update', $category->id) }}" method="POST">
         <h3>Edit New Category</h3>
+        {{-- code validasi redirect --}}
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        {{--  --}}
         @csrf
         @method('PUT')
         <input type="text" placeholder="add category" name="category_name" value="{{ $category->category_name }}"

@@ -10,7 +10,7 @@
 
 <body>
 
-    <form action="/categories/store" method="POST">
+    <form action="{{ route('categories.store') }}" method="POST">
         <h3>Add New Category</h3>
         @csrf
         <input type="text" placeholder="add category" name="category_name" required>

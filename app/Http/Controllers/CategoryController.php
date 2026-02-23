@@ -10,10 +10,10 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
 
     {
-        $categories  = Category::getAll();
+        $categories  = Category::getAll($request);
         // dd($categories);
         return view('categories.index', compact('categories'));
     }
@@ -36,7 +36,8 @@ class CategoryController extends Controller
 
         $store = Category::store($data);
         if ($store) {
-            echo "Data Berhasil Disimpan";
+            return redirect('/categories')->with('success', 'Data Berhasil Disimpan');
+
         } else {
             echo "Data Gagal Disimpan";
         }
@@ -65,9 +66,20 @@ class CategoryController extends Controller
 
         $update = Category::updateData($id, $data);
         if($update){
-            echo "Data Berhasil Diupdate";
+           return redirect('/categories')->with('success', 'Data Berhasil Diupdate');
         } else {
             echo "Data Gagal Diupdate";
+        }
+    }
+
+
+    public function destroy($id)
+    {
+        $delete = Category::deleteData($id);
+        if($delete){
+           return redirect('/categories')->with('success', 'Data Berhasil Dihapus');
+        } else {
+            echo "Data Gagal Dihapus";
         }
     }
 }
