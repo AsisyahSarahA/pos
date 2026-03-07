@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -11,10 +12,9 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-
     {
-        $categories  = Category::getAll($request);
-        // dd($categories);
+        $categories = Category::getAllWithFilters($request);
+
         return view('categories.index', compact('categories'));
     }
 
@@ -26,60 +26,90 @@ class CategoryController extends Controller
         return view('categories.create');
     }
 
-
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $data = [
-            'category_name' => $request->category_name,
-        ];
+        $validated = $request->validate([
+            'category_name' => [
+                'required',
+                'string',
+                'max:30',
+                'unique:categories,category_name'
+            ],
+        ], [
+            'category_name.required' => 'Nama kategori wajib diisi',
+            'category_name.unique'   => 'Nama kategori sudah digunakan',
+            'category_name.max'      => 'Nama kategori maksimal 30 karakter',
+        ]);
 
+        Category::create($validated);
 
-        $store = Category::store($data);
-        if ($store) {
-            return redirect('/categories')->with('success', 'Data Berhasil Disimpan');
-
-        } else {
-            echo "Data Gagal Disimpan";
-        }
+        return redirect()->route('categories.index')
+            ->with('success', 'Data Berhasil Disimpan');
     }
 
-
-
-    public function edit ($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
-        // $categories = Category::getCategoryById($id);
-        // return view ('categories.edit', compact('categories'));
-
-
-        $data['category'] = Category::getCategoryById($id);
-        return view('categories.edit', $data);
-
+        $category = Category::with('products')->findOrFail($id);
+        return view('categories.show', compact('category'));
     }
 
-
-
-    public function update (Request $request, $id)
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
-        $data = [
-            'category_name' => $request->category_name,
-        ];
-
-        $update = Category::updateData($id, $data);
-        if($update){
-           return redirect('/categories')->with('success', 'Data Berhasil Diupdate');
-        } else {
-            echo "Data Gagal Diupdate";
-        }
+        $category = Category::findOrFail($id);
+        return view('categories.edit', compact('category'));
     }
 
-
-    public function destroy($id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $delete = Category::deleteData($id);
-        if($delete){
-           return redirect('/categories')->with('success', 'Data Berhasil Dihapus');
-        } else {
-            echo "Data Gagal Dihapus";
+        $category = Category::findOrFail($id);
+
+        $validated = $request->validate([
+            'category_name' => [
+                'required',
+                'string',
+                'max:30',
+                Rule::unique('categories', 'category_name')->ignore($category->id)
+            ],
+        ], [
+            'category_name.required' => 'Nama kategori wajib diisi',
+            'category_name.unique'   => 'Nama kategori sudah digunakan',
+            'category_name.max'      => 'Nama kategori maksimal 30 karakter',
+        ]);
+
+        $category->update($validated);
+
+        return redirect()->route('categories.index')
+            ->with('success', 'Data Berhasil Diupdate');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $category = Category::findOrFail($id);
+
+        
+        if ($category->products()->count() > 0) {
+            return redirect()->route('categories.index')
+                ->with('error', 'Tidak dapat menghapus kategori yang masih memiliki produk!');
         }
+
+        $category->delete();
+
+        return redirect()->route('categories.index')
+            ->with('success', 'Data Berhasil Dihapus');
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
-use Illuminate\Http\Request;
 use App\Models\Category;
-
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProdukController extends Controller
 {
@@ -14,13 +14,9 @@ class ProdukController extends Controller
      */
     public function index(Request $request)
     {
-        // $data['title'] = "Judul Produk";
-         {
-        $dataproduk  = Produk::getAll($request);
-        // dd($categories);
-        return view('produk.index', compact('dataproduk'));
-    }
+        $dataproduk = Produk::getAllWithFilters($request);
 
+        return view('produk.index', compact('dataproduk'));
     }
 
     /**
@@ -28,30 +24,42 @@ class ProdukController extends Controller
      */
     public function create()
     {
-        $categories = Category::getAll(request());
+        $categories = Category::all(); //  Eloquent: ambil semua category
         return view('produk.create', compact('categories'));
-
     }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $data = [
-            'product_code' => $request->product_code,
-            'product_name' => $request->product_name,
-            'category_id' => $request->category_id,
-            'price' => $request->price,
-            'unit' => $request->unit,
-        ];
+
+        $validated = $request->validate([
+            'product_code' => 'required|string|max:6|unique:produks,product_code',
+            'product_name' => 'required|string|max:50',
+            'category_id'  => 'required|exists:categories,id',
+            'price'        => 'required|integer|min:0',
+            'unit'         => 'required|string|max:6',
+        ],
+        [
+            'product_code.required' => 'Kode produk wajib diisi',
+            'product_code.unique'   => 'Kode produk sudah digunakan',
+            'product_code.max'      => 'Kode produk maksimal 6 karakter',
+            'product_name.required' => 'Nama produk wajib diisi',
+            'category_id.required'  => 'Kategori wajib dipilih',
+            'category_id.exists'   => 'Kategori tidak valid',
+            'price.required'       => 'Harga wajib diisi',
+            'price.integer'        => 'Harga harus berupa angka',
+            'price.min'            => 'Harga tidak boleh negatif',
+            'unit.required'        => 'Satuan wajib diisi',
+            'unit.max'             => 'Satuan maksimal 6 karakter',
+        ]);
 
 
-        $store = Produk::store($data);
-        if ($store) {
-            return redirect('/produk')->with('success', 'Data Berhasil Disimpan');
-        } else {
-            echo "Data Gagal Disimpan";
-        }
+        Produk::create($validated);
+
+        return redirect()->route('produk.index')
+            ->with('success', 'Data Berhasil Disimpan');
     }
 
     /**
@@ -59,7 +67,8 @@ class ProdukController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $produk = Produk::with('category')->findOrFail($id);
+        return view('produk.show', compact('produk'));
     }
 
     /**
@@ -67,10 +76,10 @@ class ProdukController extends Controller
      */
     public function edit(string $id)
     {
-        $produk = Produk::getProdukById($id);
-        $categories = Category::getAll(request());
-        return view('produk.edit', compact('produk', 'categories'));
+        $produk = Produk::findOrFail($id);
+        $categories = Category::all();
 
+        return view('produk.edit', compact('produk', 'categories'));
     }
 
     /**
@@ -78,20 +87,26 @@ class ProdukController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = [
-            'product_code' => $request->product_code,
-            'product_name' => $request->product_name,
-            'category_id' => $request->category_id,
-            'price' => $request->price,
-            'unit' => $request->unit,
-        ];
+        $produk = Produk::findOrFail($id);
 
-        $update = Produk::updateData($id, $data);
-        if ($update) {
-            return redirect('/produk')->with('success', 'Data Berhasil Diupdate');
-        } else {
-            echo "Data Gagal Diupdate";
-        }
+        $validated = $request->validate([
+            'product_code' => [
+                'required',
+                'string',
+                'max:6',
+                Rule::unique('produks', 'product_code')->ignore($produk->id)
+            ],
+            'product_name' => 'required|string|max:255',
+            'category_id'  => 'required|exists:categories,id',
+            'price'        => 'required|integer|min:0',
+            'unit'         => 'required|string|max:6',
+        ]);
+
+
+        $produk->update($validated);
+
+        return redirect()->route('produk.index')
+            ->with('success', 'Data Berhasil Diupdate');
     }
 
     /**
@@ -99,11 +114,11 @@ class ProdukController extends Controller
      */
     public function destroy(string $id)
     {
-         $delete = Produk::deleteData($id);
-        if($delete){
-           return redirect('/produk')->with('success', 'Data Berhasil Dihapus');
-        } else {
-            echo "Data Gagal Dihapus";
-        }
+        $produk = Produk::findOrFail($id);
+
+        $produk->delete();
+
+        return redirect()->route('produk.index')
+            ->with('success', 'Data Berhasil Dihapus');
     }
 }

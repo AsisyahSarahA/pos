@@ -13,4 +13,34 @@ class Customer extends Model
 
         return $customers;
     }
+
+    public static function store($data)
+    {
+        $store = DB::table('customers')->insert($data);
+
+        return $store;
+    }
+
+    public static function getCustomerById($id)
+    {
+        $customer = DB::table('customers')->where('id', $id)->first();
+
+        return $customer;
+    }
+
+    public static function updateCustomer($id, $data)
+    {
+        $update = DB::table('customers')->where('id', $id)->update($data);
+
+        return $update;
+    }
+
+    public static function deleteCustomer($id)
+    {
+        $delete = DB::table('customers')->where('id', $id)->delete();
+
+        return $delete;
+    }
+
+    
 }
