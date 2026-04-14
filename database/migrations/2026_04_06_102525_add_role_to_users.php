@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
-            $table->id();
-            $table->char('customer_code',6);
-            $table->string('customer_name');
-            $table->text('customer_address');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('role', 20)->after('password'); // Menambahkan kolom 'role' dengan default 'user'
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
+        });
     }
 };
