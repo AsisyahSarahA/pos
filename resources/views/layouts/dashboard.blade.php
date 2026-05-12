@@ -1,4 +1,7 @@
- <div id="page-dashboard" class="page-content active-page p-8">
+@extends('layouts.app')
+@section('content')
+
+<div id="page-dashboard" class="page-content active-page p-8">
  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-50">
           <div class="flex justify-between items-start mb-4">
@@ -480,3 +483,5 @@
       </div>
   </div>
 </div>
+
+@endsection

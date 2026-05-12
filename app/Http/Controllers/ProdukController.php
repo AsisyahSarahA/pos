@@ -15,8 +15,9 @@ class ProdukController extends Controller
     public function index(Request $request)
     {
         $dataproduk = Produk::getAllWithFilters($request);
+        $categories = Category::all();
 
-        return view('produk.index', compact('dataproduk'));
+        return view('produk.index', compact('dataproduk', 'categories'));
     }
 
     /**
@@ -25,7 +26,7 @@ class ProdukController extends Controller
     public function create()
     {
         $categories = Category::all(); //  Eloquent: ambil semua category
-        return view('produk.create', compact('categories'));
+        return view('produk.create', compact('categories'));    
     }
 
     /**

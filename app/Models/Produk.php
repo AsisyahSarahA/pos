@@ -42,12 +42,12 @@ class Produk extends Model
     }
 
     /**
-     * Scope untuk filter berdasarkan ID
+     * Scope untuk filter berdasarkan Category ID
      */
-    public function scopeFilterById(Builder $query, ?int $id): Builder
+    public function scopeFilterByCategory(Builder $query, ?int $categoryId): Builder
     {
-        if ($id) {
-            return $query->where('produks.id', $id);
+        if ($categoryId) {
+            return $query->where('category_id', $categoryId);
         }
         return $query;
     }
@@ -59,7 +59,7 @@ class Produk extends Model
     {
         return self::with('category')
             ->filterByName($request->product_name)
-            ->filterById($request->id)
+            ->filterByCategory($request->category_id)
             ->latest()
             ->get();
     }

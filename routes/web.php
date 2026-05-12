@@ -13,13 +13,15 @@ use League\CommonMark\Extension\SmartPunct\DashParser;
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    Route::resource('produk', ProdukController::class);
 
 
-    Route::middleware(cekRole::class . 'admin')->group(function () {
+    Route::middleware(cekRole::class . ':admin')->group(function () {
+        Route::get('/dashboard/dashboard-admin', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
         Route::resource('/categories', CategoryController::class);
         Route::resource('/suppliers', SupplierController::class);
         Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('/produk/create', [ProdukController::class, 'create'])->name('produk.create');
+        Route::resource('produk', ProdukController::class);
     });
     Route::post('/proseslogout', [AuthController::class, 'proseslogout'])->name('proseslogout');
 });
@@ -28,5 +30,5 @@ Route::middleware('auth')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'login'])->name('login');
 
- Route::post('/proseslogin', [AuthController::class, 'proseslogin'])->name('proseslogin');
+    Route::post('/proseslogin', [AuthController::class, 'proseslogin'])->name('proseslogin');
 });

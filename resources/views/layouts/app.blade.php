@@ -26,10 +26,9 @@
             @include('layouts.header')
 
             <!-- PAGE: DASHBOARD (Referencing image_bc2088.png) -->
-            @yield('content')qq
+            @yield('content')
                 <!-- Stats Cards -->
 
-            </div>
         </main>
     </div>
 
