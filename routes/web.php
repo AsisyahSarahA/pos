@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard/dashboard-admin', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
         Route::resource('/categories', CategoryController::class);
         Route::resource('/suppliers', SupplierController::class);
-        Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::resource('/customers', CustomerController::class);
         Route::get('/produk/create', [ProdukController::class, 'create'])->name('produk.create');
         Route::resource('produk', ProdukController::class);
     });

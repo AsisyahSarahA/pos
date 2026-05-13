@@ -36,30 +36,29 @@
                 </li>
 
                 <!-- Dashboards -->
-                <li class="menu-item {{ request()->is(['produk','supplier','customers,categories']) ? 'active open' : '' }}">
+                <li class="menu-item {{ request()->is(['produk*', 'suppliers*', 'customers*', 'categories*']) ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="ti ti-database"></i>
+                        <i class="menu-icon tf-icons ti ti-database"></i>
                         <div data-i18n="Data Master">Data Master</div>
-                        <div class="badge bg-label-primary rounded-pill ms-auto">3</div>
                     </a>
                     <ul class="menu-sub">
-                        <li class="menu-item {{ request()->is('supplier') ? 'active' : '' }} ">
-                            <a href="index.html" class="menu-link">
+                        <li class="menu-item {{ request()->is('suppliers*') ? 'active' : '' }} ">
+                            <a href="{{ route('suppliers.index') }}" class="menu-link">
                                 <div data-i18n="Supplier">Supplier</div>
                             </a>
                         </li>
-                        <li class="menu-item {{ request()->is('produk') ? 'active' : '' }}">
+                        <li class="menu-item {{ request()->is('produk*') ? 'active' : '' }}">
                             <a href="{{ route('produk.index') }}" class="menu-link">
                                 <div data-i18n="Produk">Produk</div>
                             </a>
                         </li>
-                        <li class="menu-item {{ request()->is('customers') ? 'active' : '' }}">
-                            <a href="dashboards-ecommerce.html" class="menu-link">
+                        <li class="menu-item {{ request()->is('customers*') ? 'active' : '' }}">
+                            <a href="{{ route('customers.index') }}" class="menu-link">
                                 <div data-i18n="Customer">Customer</div>
                             </a>
                         </li>
-                        <li class="menu-item {{ request()->is('categories') ? 'active' : '' }}">
-                            <a href="{{route('categories.index')}}" class="menu-link">
+                        <li class="menu-item {{ request()->is('categories*') ? 'active' : '' }}">
+                            <a href="{{ route('categories.index') }}" class="menu-link">
                                 <div data-i18n="Categories">Categories</div>
                             </a>
                         </li>

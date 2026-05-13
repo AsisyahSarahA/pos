@@ -3,85 +3,97 @@
 @section('page-title', 'Data Kategori')
 
 @section('content')
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Kategori</title>
-</head>
-<body>
-    <h1>Halaman Kategori</h1>
 
-    {{-- Flash Messages --}}
-    @if(session('success'))
-        <div style="color: green; margin-bottom: 10px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px;">
-            ✅ {{ session('success') }}
-        </div>
-    @endif
-    @if(session('error'))
-        <div style="color: red; margin-bottom: 10px; padding: 10px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
-            ⚠️ {{ session('error') }}
-        </div>
-    @endif
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                    {{-- Button Tambah Kategori --}}
+                    <a href="javascript:void(0)" id="btnTambahData" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#categoryModal">
+                        Tambah Kategori
+                    </a>
 
-    {{-- Form Filter --}}
-    <form method="GET" action="{{ route('categories.index') }}" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
-        <label>Cari Kategori:</label>
-        <input type="text" name="category_name" placeholder="Nama kategori..."
-               value="{{ request('category_name') }}" style="padding: 5px 10px; margin-right: 10px;">
-        <input type="number" name="id" placeholder="ID..."
-               value="{{ request('id') }}" style="padding: 5px 10px; margin-right: 10px; width: 80px;">
-        <button type="submit" style="padding: 5px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">🔍 Cari</button>
-        <a href="{{ route('categories.index') }}" style="margin-left: 5px; padding: 5px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;">↺ Reset</a>
-    </form>
-
-    {{-- Tombol Tambah --}}
-    <a href="{{ route('categories.create') }}" style="display: inline-block; margin-bottom: 15px; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 4px;">+ Tambah Kategori</a>
-
-    {{-- Tabel Data --}}
-    <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-        <thead style="background: #007bff; color: white;">
-            <tr>
-                <th>No</th>
-                <th>ID</th>
-                <th>Nama Kategori</th>
-                {{-- <th>Jumlah Produk</th> --}}
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($categories as $category)
-                <tr style="text-align: center;">
+                    {{-- Form Search --}}
+                    <form action="{{ route('categories.index') }}" method="GET">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <div class="input-group" style="width: 300px;">
+                                <span class="input-group-text">
+                                    <i class="ti ti-search"></i>
+                                </span>
+                                <input type="text" class="form-control" placeholder="Search..." name="category_name"
+                                    value="{{ request('category_name') }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                Cari
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </thead>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Kategori</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($categories as $category)
+                <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $category->id }}</td>
-                    <td style="text-align: left;">{{ $category->category_name }}</td>
-                    {{-- <td>
-                        <span style="background: #17a2b8; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px;">
-                            {{ $category->products->count() }} produk
-                        </span>
-                    </td> --}}
+                    <td>{{ $category->category_name }}</td>
                     <td>
-                        <a href="{{ route('categories.edit', $category->id) }}"
-                           style="display: inline-block; padding: 5px 12px; background: #ffc107; color: #212529; text-decoration: none; border-radius: 4px; margin-right: 5px;">✏️ Edit</a>
-
-                        <form action="{{ route('categories.destroy', $category->id) }}"
-                              method="POST" style="display: inline-block;"
-                              onsubmit="return confirm('Yakin ingin menghapus kategori ini?\n\n⚠️ Pastikan tidak ada produk yang menggunakan kategori ini.')">
+                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" style="padding: 5px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">🗑️ Hapus</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
                         </form>
                     </td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 20px; color: #6c757d;">
-                        📭 Tidak ada data kategori
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</body>
-</html>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{-- modal --}}
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{{ route('categories.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="title-modal">Tambah Kategori</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="category_name" class="form-label font-bold text-slate-600">Nama Kategori</label>
+                            <input type="text" name="category_name" id="category_name" class="form-control" placeholder="Masukkan nama kategori" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Simpan Kategori</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @endsection
+
+@push('myscript')
+<script>
+    $(function () {
+        $('#btnTambahData').click(function(e){
+            e.preventDefault();
+            $("#categoryModal").modal('show');
+            $('#title-modal').html('Tambah Kategori');
+        });
+    })
+</script>
+@endpush
