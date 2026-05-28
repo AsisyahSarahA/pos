@@ -61,25 +61,8 @@
 {{-- modal --}}
 <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="{{ route('categories.store') }}" method="POST">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="title-modal">Tambah Kategori</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <label for="category_name" class="form-label font-bold text-slate-600">Nama Kategori</label>
-                            <input type="text" name="category_name" id="category_name" class="form-control" placeholder="Masukkan nama kategori" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Simpan Kategori</button>
-                </div>
-            </form>
+        <div class="modal-content" id="loadFormCategory">
+            {{-- Content will be loaded here --}}
         </div>
     </div>
 </div>
@@ -92,7 +75,7 @@
         $('#btnTambahData').click(function(e){
             e.preventDefault();
             $("#categoryModal").modal('show');
-            $('#title-modal').html('Tambah Kategori');
+            $('#loadFormCategory').load("{{ route('categories.create') }}");
         });
     })
 </script>

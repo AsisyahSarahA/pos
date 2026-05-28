@@ -1,65 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Produk</title>
-</head>
-<body>
-    <h1>Tambah Produk Baru</h1>
-
-    <form action="{{ route('produk.store') }}" method="POST">
-        @csrf
-
-        <div>
-            <label>Kode Produk *</label><br>
-            <input type="text" name="product_code"
-                   value="{{ old('product_code') }}"
-                   required maxlength="6">
-            @error('product_code') <small style="color: red;">{{ $message }}</small> @enderror
+<form action="{{ route('customers.store') }}" method="POST" id="formCustomer">
+    @csrf
+    <div class="modal-header">
+        <h5 class="modal-title" id="title-modal">Tambah Customer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="customer_name" class="form-label font-bold text-slate-600">Nama Customer</label>
+                <input type="text" name="customer_name" id="customer_name" class="form-control" placeholder="Masukkan nama customer" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="customer_code" class="form-label font-bold text-slate-600">Kode Customer</label>
+                <input type="text" name="customer_code" id="customer_code" class="form-control" placeholder="CUS-XXX" required>
+            </div>
         </div>
-
-        <div>
-            <label>Nama Produk *</label><br>
-            <input type="text" name="product_name"
-                   value="{{ old('product_name') }}"
-                   required>
-            @error('product_name') <small style="color: red;">{{ $message }}</small> @enderror
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label font-bold text-slate-600">Telepon</label>
+                <input type="text" name="phone" id="phone" class="form-control" placeholder="08XXXXXXXX" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="address" class="form-label font-bold text-slate-600">Alamat</label>
+                <input type="text" name="address" id="address" class="form-control" placeholder="Alamat customer" required>
+            </div>
         </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Simpan Customer</button>
+    </div>
+</form>
 
-        <div>
-            <label>Kategori *</label><br>
-            <select name="category_id" required>
-                <option value="">-- Pilih Kategori --</option>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}"
-                            {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                        {{ $category->category_name }}
-                    </option>
-                @endforeach
-            </select>
-            @error('category_id') <small style="color: red;">{{ $message }}</small> @enderror
-        </div>
-
-        <div>
-            <label>Harga *</label><br>
-            <input type="number" name="price"
-                   value="{{ old('price') }}"
-                   required min="0">
-            @error('price') <small style="color: red;">{{ $message }}</small> @enderror
-        </div>
-
-        <div>
-            <label>Satuan *</label><br>
-            <input type="text" name="unit"
-                   value="{{ old('unit') }}"
-                   required maxlength="6" placeholder="pcs, kg, dll">
-            @error('unit') <small style="color: red;">{{ $message }}</small> @enderror
-        </div>
-
-        <br>
-        <button type="submit">💾 Simpan</button>
-        <a href="{{ route('produk.index') }}">Kembali</a>
-    </form>
-</body>
-</html>
+<script>
+    $(document).off('submit', '#formCustomer').on('submit', '#formCustomer', function(e){
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: "POST",
+            data: $(this).serialize(),
+            success: function(response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Customer berhasil ditambahkan',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $('#customerModal').modal('hide');
+                location.reload();
+            },
+            error: function(xhr){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi kesalahan',
+                    text: xhr.responseJSON.message
+                });
+            }
+        });
+    });
+</script>

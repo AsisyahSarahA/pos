@@ -67,39 +67,8 @@
 {{-- modal --}}
 <div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <form action="{{ route('customers.store') }}" method="POST">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="title-modal">Tambah Customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="customer_name" class="form-label font-bold text-slate-600">Nama Customer</label>
-                            <input type="text" name="customer_name" id="customer_name" class="form-control" placeholder="Masukkan nama customer" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="customer_code" class="form-label font-bold text-slate-600">Kode Customer</label>
-                            <input type="text" name="customer_code" id="customer_code" class="form-control" placeholder="CUS-XXX" required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label font-bold text-slate-600">Telepon</label>
-                            <input type="text" name="phone" id="phone" class="form-control" placeholder="08XXXXXXXX" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="address" class="form-label font-bold text-slate-600">Alamat</label>
-                            <input type="text" name="address" id="address" class="form-control" placeholder="Alamat customer" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Simpan Customer</button>
-                </div>
-            </form>
+        <div class="modal-content" id="loadFormCustomer">
+            {{-- Content will be loaded here --}}
         </div>
     </div>
 </div>
@@ -112,7 +81,7 @@
         $('#btnTambahData').click(function(e){
             e.preventDefault();
             $("#customerModal").modal('show');
-            $('#title-modal').html('Tambah Customer');
+            $('#loadFormCustomer').load("{{ route('customers.create') }}");
         });
     })
 </script>

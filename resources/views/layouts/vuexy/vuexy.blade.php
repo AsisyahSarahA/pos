@@ -31,7 +31,7 @@
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            
+
             <!-- Menu -->
             {{-- sidebar --}}
             @include('layouts.vuexy.sidebar')
@@ -49,13 +49,69 @@
                     <!-- Content -->
 
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Icons /</span>@yield('page-title')</h4>
+                        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Icons
+                                /</span>@yield('page-title')</h4>
+
+
+                        @if (session('success'))
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil!',
+                                        text: "{{ session('success') }}",
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    });
+                                });
+                            </script>
+                        @endif
+
+                        @if (session('error'))
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Terjadi Kesalahan!',
+                                        text: "{{ session('error') }}",
+                                        confirmButtonText: 'OK'
+                                    });
+                                });
+                            </script>
+                        @endif
+
+                        @if (session('warning'))
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Peringatan!',
+                                        text: "{{ session('warning') }}",
+                                        confirmButtonText: 'OK'
+                                    });
+                                });
+                            </script>
+                        @endif
+
+                        @if (session('info'))
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'Informasi',
+                                        text: "{{ session('info') }}",
+                                        confirmButtonText: 'OK'
+                                    });
+                                });
+                            </script>
+                        @endif
 
                         @yield('content')
                     </div>
 
 
                     <!-- / Content -->
+
 
                     <!-- Footer -->
                     @include('layouts.vuexy.footer')

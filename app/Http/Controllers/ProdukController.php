@@ -14,7 +14,11 @@ class ProdukController extends Controller
      */
     public function index(Request $request)
     {
-        $dataproduk = Produk::getAllWithFilters($request);
+        $dataproduk = Produk::with('category')
+            ->filterByName($request->product_name)
+            ->filterByCategory($request->category_id)
+            ->latest()
+            ->paginate(5);
         $categories = Category::all();
 
         return view('produk.index', compact('dataproduk', 'categories'));

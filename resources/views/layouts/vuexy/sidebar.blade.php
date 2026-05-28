@@ -73,10 +73,16 @@
                 </li>
                 <li class="menu-item">
                     <a href="app-email.html" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-shopping-cart"></i>
+                        <div data-i18n="Sales Transaction">Sales Transaction</div>
+                    </a>
+                </li>
+                {{-- <li class="menu-item">
+                    <a href="app-email.html" class="menu-link">
                         <i class="menu-icon tf-icons ti ti-mail"></i>
                         <div data-i18n="Email">Email</div>
                     </a>
-                </li>
+                </li> --}}
 
 
             </ul>

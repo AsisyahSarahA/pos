@@ -1,47 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Kategori</title>
-</head>
-<body>
-    <h1>Tambah Kategori Baru</h1>
-
-    {{-- Display Validation Errors --}}
-    @if ($errors->any())
-        <div style="color: red; margin-bottom: 15px; padding: 10px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
-            <strong>⚠️ Terjadi kesalahan:</strong>
-            <ul style="margin: 5px 0 0 20px;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+<form action="{{ route('categories.store') }}" method="POST" id="formCategory">
+    @csrf
+    <div class="modal-header">
+        <h5 class="modal-title" id="title-modal">Tambah Kategori</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12 mb-3">
+                <label for="category_name" class="form-label font-bold text-slate-600">Nama Kategori</label>
+                <input type="text" name="category_name" id="category_name" class="form-control" placeholder="Masukkan nama kategori" required>
+            </div>
         </div>
-    @endif
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary waves-effect waves-light w-100">Simpan Kategori</button>
+    </div>
+</form>
 
-    <form action="{{ route('categories.store') }}" method="POST" style="max-width: 500px;">
-        @csrf
-
-        <div style="margin-bottom: 15px;">
-            <label for="category_name" style="display: block; margin-bottom: 5px; font-weight: bold;">Nama Kategori *</label>
-            <input type="text"
-                   id="category_name"
-                   name="category_name"
-                   value="{{ old('category_name') }}"
-                   placeholder="Contoh: Elektronik, Makanan, dll"
-                   required
-                   maxlength="30"
-                   style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box;">
-            @error('category_name')
-                <small style="color: red;">{{ $message }}</small>
-            @enderror
-        </div>
-
-        <div style="margin-top: 20px;">
-            <button type="submit" style="padding: 10px 25px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">💾 Simpan</button>
-            <a href="{{ route('categories.index') }}" style="margin-left: 10px; padding: 10px 25px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">↩ Kembali</a>
-        </div>
-    </form>
-</body>
-</html>
+<script>
+    $(document).off('submit', '#formCategory').on('submit', '#formCategory', function(e){
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            type: "POST",
+            data: $(this).serialize(),
+            success: function(response){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Kategori berhasil ditambahkan',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                $('#categoryModal').modal('hide');
+                location.reload(); // Since we don't have DataTable for categories yet, we reload the page
+            },
+            error: function(xhr){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi kesalahan',
+                    text: xhr.responseJSON.message
+                });
+            }
+        });
+    });
+</script>
